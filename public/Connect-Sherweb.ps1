@@ -13,6 +13,9 @@ Function Connect-Sherweb {
     .PARAMETER ClientSecret
         The Client Secret provided by Sherweb for API authentication.
 
+    .PARAMETER GatewaySubscriptionKey
+        The Gateway Subscription Key provided by Sherweb for API authentication.
+
     .PARAMETER AuthUri
         The URI for the Sherweb API authentication endpoint. Defaults to 'https://api.sherweb.com/auth/oidc/connect/token'.
 
@@ -45,6 +48,10 @@ Function Connect-Sherweb {
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string]$ClientSecret,
+
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]$GatewaySubscriptionKey,
 
         [Parameter()]
         [ValidatePattern('^https://.*')]

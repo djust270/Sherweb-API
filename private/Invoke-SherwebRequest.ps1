@@ -56,6 +56,11 @@ Function Invoke-SherwebRequest {
         Write-Verbose "Removing leading slash from endpoint if present"
         $Endpoint = $Endpoint.TrimStart('/')
 
+        $Scope = switch ($API){
+            "ServiceProvider" { "service-provider" }
+            "Distributor" { "distributor" }
+        }
+
         # Build base URL
         Write-Verbose "Building base URL"
         $Uri = "$GatewayBaseURL/$Scope/v1/$Endpoint"
