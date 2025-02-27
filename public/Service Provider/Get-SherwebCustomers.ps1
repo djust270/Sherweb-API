@@ -15,7 +15,7 @@ function Get-SherwebCustomers {
         A list of customers.
 
     .NOTES
-        Author: Your Name
+        Reference: https://developers.sherweb.com/api-details#api=service-provider-api&operation=GetCustomers
     #>
     [CmdletBinding()]
     [OutputType([PSCustomObject[]])]
