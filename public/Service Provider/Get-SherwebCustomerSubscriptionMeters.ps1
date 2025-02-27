@@ -1,3 +1,4 @@
+function Get-SherwebCustomerSubscriptionMeters {
 <#
 .SYNOPSIS
     Retrieves the list of subscriptions meters for one of your customers.
@@ -21,9 +22,7 @@
 
 .NOTES
     Reference: https://developers.sherweb.com/api-details#api=service-provider-api&operation=GetCustomerSubscriptionMeters
-#>
-function Get-SherwebCustomerSubscriptionMeters {
-    
+#>    
     [CmdletBinding()]
     [OutputType([PSCustomObject[]])]
     param(
