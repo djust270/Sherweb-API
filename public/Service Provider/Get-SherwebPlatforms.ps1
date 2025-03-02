@@ -16,6 +16,7 @@ function Get-SherwebPlatforms {
 
 .NOTES
     Reference: https://developers.sherweb.com/api-details#api=service-provider-api&operation=GetAllPlatforms
+#>
     [CmdletBinding()]
     [OutputType([PSCustomObject[]])]
     param()
