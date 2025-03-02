@@ -20,25 +20,25 @@ function Get-SherwebCustomerSubscriptionsPricingInformation {
 .NOTES
     Reference: https://developers.sherweb.com/api-details#api=service-provider-api&operation=GetAllSubscriptionPricingInformation
 #>    
-        [CmdletBinding()]
-        [OutputType([PSCustomObject[]])]
-        param(
-            [Parameter(Mandatory)]
-            [ValidateNotNullOrEmpty()]
-            [string]$CustomerId
-        )
-    
-        begin {
-            $sherwebParams = @{
-                API         = "ServiceProvider"
-                Endpoint    = "billing/subscriptions/pricing-information"
-                FilterQuery = "customerId=$CustomerId"
-                Method      = "GET"
-            }
+    [CmdletBinding()]
+    [OutputType([PSCustomObject[]])]
+    param(
+        [Parameter(Mandatory)]
+        [ValidateNotNullOrEmpty()]
+        [string]$CustomerId
+    )
+
+    begin {
+        $sherwebParams = @{
+            API         = "ServiceProvider"
+            Endpoint    = "billing/subscriptions/pricing-information"
+            FilterQuery = "customerId=$CustomerId"
+            Method      = "GET"
         }
-    
-        process {
-            (Invoke-SherwebRequest @sherwebParams).items
-        }
-        end {}
     }
+
+    process {
+        (Invoke-SherwebRequest @sherwebParams).items
+    }
+    end {}
+}
