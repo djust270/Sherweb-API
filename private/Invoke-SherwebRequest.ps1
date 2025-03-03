@@ -76,8 +76,9 @@ Function Invoke-SherwebRequest {
 
         $InvokeRestMethodParams = @{
             Headers     = @{
-                "Ocp-Apim-Subscription-Key" = $script:SherwebAccessToken.GatewaySubscriptionKey
-                "Authorization"             = "Bearer $($script:SherwebAccessToken.AccessToken)"
+                'Ocp-Apim-Subscription-Key' = $script:SherwebAccessToken.GatewaySubscriptionKey
+                'Authorization'             = "Bearer $($script:SherwebAccessToken.AccessToken)"
+                'Content-Type'              = 'application/json'
             }
             Method      = $Method
             URI         = $uri
@@ -99,9 +100,11 @@ Function Invoke-SherwebRequest {
                 $success = $true
             }
             catch {
+                $errorMessage = $_.Exception.Message
+                $statusCode = $_.Exception.Response.StatusCode
                 $errorResponse = $_.ErrorDetails.Message | ConvertFrom-Json -ErrorAction SilentlyContinue
 
-                if ($_.Exception.Response.StatusCode -eq 429) {
+                if ($statusCode -eq 429) {
                     $retryCount++
                     
                     # Extract retry delay from error message if available
@@ -119,9 +122,9 @@ Function Invoke-SherwebRequest {
                         continue
                     }
                 }
-                
-                # If we're here, either it's not a rate limit error or we've exceeded retries
-                throw
+                else {
+                    throw "Error Code ${statusCode}: $errorMessage"
+                }        
             }
         } while (-not $success -and $retryCount -le $MaxRetries)
     }
