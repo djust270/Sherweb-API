@@ -123,6 +123,9 @@ Function Invoke-SherwebRequest {
                     }
                 }
                 else {
+                    if ($errorResponse.detail){
+                        $errorMessage = $errorResponse.detail
+                    }
                     throw "Error Code ${statusCode}: $errorMessage"
                 }        
             }

@@ -6,6 +6,9 @@ function New-SherwebOrderRequest {
     .DESCRIPTION
         The New-SherwebOrderRequest function creates a new order request on Sherweb.
 
+    .PARAMETER CustomerId
+        The ID of the customer to create the order request for.
+
     .PARAMETER OrderBody
         The body of the order request. This should be a hashtable containing the following properties:
             - cartItems (array of objects): An array of objects containing the SKU and quantity of the items in the order.
@@ -53,7 +56,7 @@ function New-SherwebOrderRequest {
             Write-Verbose "Order request is valid"
         }
         catch {
-            Write-Error "Order request is invalid: $_"
+            throw "Order request is invalid: $($_.Exception.Message)"
         }
         $sherwebParams = @{
             API         = "ServiceProvider"
