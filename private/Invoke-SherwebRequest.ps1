@@ -1,31 +1,84 @@
 Function Invoke-SherwebRequest {
+<#
+    .SYNOPSIS
+        Sends API requests to Sherweb endpoints with automatic authentication token management and rate limiting handling.
+
+    .DESCRIPTION
+        This function sends HTTP requests to Sherweb API endpoints, managing authentication tokens automatically.
+        It handles rate limiting with exponential backoff retry logic and automatically refreshes expired tokens.
+    
+    .PARAMETER FilterQuery
+        Optional query string to filter the API results. Do not include the leading '?' character.
+
+    .PARAMETER API
+        Mandatory parameter to specify which Sherweb API to use. Valid values are 'ServiceProvider' or 'Distributor'.
+
+    .PARAMETER GatewayBaseURL
+        Base URL of the Sherweb API gateway. Defaults to 'https://api.sherweb.com'.
+
+    .PARAMETER Endpoint
+        Mandatory parameter specifying the API endpoint to call (without the base URL).
+
+    .PARAMETER MaxRetries
+        Maximum number of retry attempts when rate limited. Defaults to 3.
+
+    .PARAMETER InitialRetryDelaySeconds
+        Initial delay in seconds before the first retry attempt. Defaults to 3 seconds.
+        Actual delay will increase exponentially with each retry.
+
+    .PARAMETER Method
+        Mandatory HTTP method to use for the request. Valid values are 'GET', 'POST', 'PATCH', or 'DELTE'.
+
+    .PARAMETER Body
+        Optional JSON body to include with the request for POST, PATCH operations.
+
+    .EXAMPLE
+        Invoke-SherwebRequest -API ServiceProvider -Endpoint 'customers' -Method GET
+    
+        Retrieves all customers using the Service Provider API.
+
+    .EXAMPLE
+        Invoke-SherwebRequest -API ServiceProvider -Endpoint 'billing/subscriptions' -Method GET -FilterQuery 'customerId=c4c56db-03fe-4564-a5b9-173453453'
+    
+        Gets the subscriptions for a customer with id of 'c4c56db-03fe-4564-a5b9-173453453' using the Service Provider API.
+
+    .NOTES
+        Before using this function, you must authenticate using Connect-Sherweb.
+        The function will automatically refresh the token if it has expired.
+
+     .LINK
+        https://developers.sherweb.com/
+
+#>
     [OutputType([PSCustomObject[]], [PSCustomObject], [Void])]
     [CmdletBinding()]
     Param(
-        [Parameter()]
-        [string]$FilterQuery,
 
         [Parameter(Mandatory)]
         [ValidateSet("ServiceProvider", "Distributor")]
         [string]$API,
 
-        [Parameter()]
-        [ValidatePattern('^https?://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}/?.*$')]
-        [string]$GatewayBaseURL = 'https://api.sherweb.com',
-
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
         [string]$Endpoint,
+
+        [Parameter(Mandatory)]
+        [ValidateSet("GET", "POST", "PATCH", "DELETE")]
+        [string]$Method,
+
+        [Parameter()]
+        [ValidatePattern('^https?://[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,}/?.*$')]
+        [string]$GatewayBaseURL = 'https://api.sherweb.com',
 
         [Parameter()]
         [int]$MaxRetries = 3,
 
         [Parameter()]
-        [int]$InitialRetryDelaySeconds = 3,
+        [ValidatePattern('^[^?].*|^$')]
+        [string]$FilterQuery,
 
-        [Parameter(Mandatory)]
-        [ValidateSet("GET", "POST", "PATCH", "DELTE")]
-        [String]$Method,
+        [Parameter()]
+        [int]$InitialRetryDelaySeconds = 3,
 
         [Parameter()]
         [string]$Body
@@ -50,10 +103,10 @@ Function Invoke-SherwebRequest {
             }
             Connect-Sherweb @connectSplat
         }
-        Write-Verbose "Beginning Invoke-SherwebRequest Process"
+        Write-Verbose -Message  "Beginning Invoke-SherwebRequest Process"
 
         # Remove leading slash from endpoint if present
-        Write-Verbose "Removing leading slash from endpoint if present"
+        Write-Verbose -Message  "Removing leading slash from endpoint if present"
         $Endpoint = $Endpoint.TrimStart('/')
 
         $Scope = switch ($API){
@@ -62,16 +115,15 @@ Function Invoke-SherwebRequest {
         }
 
         # Build base URL
-        Write-Verbose "Building base URL"
+        Write-Verbose -Message  "Building base URL"
         $Uri = "$GatewayBaseURL/$Scope/v1/$Endpoint"
-        Write-Verbose "Base URL: $Uri"
+        Write-Verbose -Message  "Base URL: $Uri"
 
         # Add filter query if present
-        if ($filterQuery) {
-            $filterQuery = $filterQuery.TrimStart('?')
-            Write-Verbose "Filter Query: $filterQuery"
-            $Uri = "$Uri`?$filterQuery"
-            Write-Verbose "URL with Filter Query: $Uri"
+        if ($FilterQuery) {
+            Write-Verbose -Message  "Filter Query: $FilterQuery"
+            $Uri = "$Uri`?$FilterQuery"
+            Write-Verbose -Message  "URL with Filter Query: $Uri"
         }
 
         $InvokeRestMethodParams = @{
@@ -90,9 +142,9 @@ Function Invoke-SherwebRequest {
     }
 
     Process {
-        Write-Verbose "Performing REST method invocation"
-        $retryCount = 0
-        $success = $false
+        Write-Verbose -Message  "Performing REST method invocation"
+        [int]$retryCount = 0
+        [bool]$success = $false
 
         do {
             try {
