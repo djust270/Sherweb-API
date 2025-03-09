@@ -1,4 +1,4 @@
-function Get-SherwebCustomers {
+function Get-SherwebCustomerCatalog {
     <#
     .SYNOPSIS
         Retrieves a list of customer catalogs from Sherweb.

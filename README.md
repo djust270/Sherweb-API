@@ -21,3 +21,6 @@ Example:
 * New-SherwebOrderRequest
 * New-SherwebSubscriptionsAmendment
 * New-SherwebSubscriptionsCancellationRequest
+* Get-CustomerCatalogItemsPricingInformation
+* Get-SherwebCustomerCatalog
+* Get-SherwebReceivableCharges
