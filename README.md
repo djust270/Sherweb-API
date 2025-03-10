@@ -5,7 +5,11 @@ PowerShell Module for interacting with the Sherweb API
 Run Connect-Sherweb to get connected. Provide your API credentials.
 
 Example:
-`Connect-Sherweb -ClientId "your-client-id" -ClientSecret "your-client-secret" -GatewaySubscriptionKey "your-gateway-subscription-key"`
+```PowerShell
+$SecureGatewaySubscriptionKey = ConvertTo-SecureString "your-gateway-subscription-key" -AsPlainText -Force
+$SecureClientSecret = ConvertTo-SecureString "your-client-secret" -AsPlainText -Force
+Connect-Sherweb -ClientId "your-client-id" -ClientSecret $SecureClientSecret -GatewaySubscriptionKey $SecureGatewaySubscriptionKey
+```
 
 ## Available Commands
 * Connect-Sherweb

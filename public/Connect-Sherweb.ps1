@@ -23,9 +23,11 @@ Function Connect-Sherweb {
         The scope of the access token. Valid values are 'service-provider' or 'distributor'.
 
     .EXAMPLE
-        PS> Connect-Sherweb -ClientId "your-client-id" -ClientSecret "your-client-secret"
-        Returns an access token string that can be used for Sherweb API authentication.
-
+        PS> $SecureGatewaySubscriptionKey = ConvertTo-SecureString "your-gateway-subscription-key" -AsPlainText -Force
+        PS> $SecureClientSecret = ConvertTo-SecureString "your-client-secret" -AsPlainText -Force
+        PS> Connect-Sherweb -ClientId "your-client-id" -ClientSecret $SecureClientSecret -GatewaySubscriptionKey $SecureGatewaySubscriptionKey
+        Retrieves an access token and stores authentication information in the current session.
+        
     .OUTPUTS
         None
 
@@ -47,11 +49,11 @@ Function Connect-Sherweb {
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [string]$ClientSecret,
+        [securestring]$ClientSecret,
 
         [Parameter(Mandatory)]
         [ValidateNotNullOrEmpty()]
-        [string]$GatewaySubscriptionKey,
+        [securestring]$GatewaySubscriptionKey,
 
         [Parameter()]
         [ValidatePattern('^https://.*')]
@@ -68,7 +70,7 @@ Function Connect-Sherweb {
             Method      = "Post"
             Body        = @{
                 client_id     = $ClientId
-                client_secret = $ClientSecret
+                client_secret = (Convert-SecureStringToPlainText -SecureString $ClientSecret)
                 scope         = $scope
                 grant_type    = "client_credentials"
             }
