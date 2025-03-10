@@ -25,3 +25,6 @@ Connect-Sherweb -ClientId "your-client-id" -ClientSecret $SecureClientSecret -Ga
 * New-SherwebOrderRequest
 * New-SherwebSubscriptionsAmendment
 * New-SherwebSubscriptionsCancellationRequest
+* Get-CustomerCatalogItemsPricingInformation
+* Get-SherwebCustomerCatalog
+* Get-SherwebReceivableCharges

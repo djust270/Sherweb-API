@@ -38,7 +38,7 @@ function Get-SherwebCustomerSubscriptionsPricingInformation {
     }
 
     process {
-        (Invoke-SherwebRequest @sherwebParams).items
+        Invoke-SherwebRequest @sherwebParams
     }
     end {}
 }
