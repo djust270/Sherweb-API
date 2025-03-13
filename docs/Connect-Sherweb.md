@@ -25,8 +25,10 @@ and stores an access token that can be used for subsequent API calls.
 
 ### EXAMPLE 1
 ```
-Connect-Sherweb -ClientId "your-client-id" -ClientSecret "your-client-secret"
-Returns an access token string that can be used for Sherweb API authentication.
+$SecureGatewaySubscriptionKey = ConvertTo-SecureString "your-gateway-subscription-key" -AsPlainText -Force
+$SecureClientSecret = ConvertTo-SecureString "your-client-secret" -AsPlainText -Force
+Connect-Sherweb -ClientId "your-client-id" -ClientSecret $SecureClientSecret -GatewaySubscriptionKey $SecureGatewaySubscriptionKey
+Retrieves an access token and stores authentication information in the current session.
 ```
 
 ## PARAMETERS
