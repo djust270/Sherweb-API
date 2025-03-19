@@ -12,7 +12,7 @@ Copy-Item -Path "$PSScriptRoot\LICENSE" -Destination $TempDir
 
 
 # Publish the module from the temp directory
-Publish-Module -Path $TempDir -NuGetApiKey $env:PS_GALLERY_KEY
+Publish-Module -Path $TempDir -NuGetApiKey $env:APIKEY
 
 # Cleanup (optional - GitHub Actions cleans up after itself)
 Remove-Item -Path $TempDir -Recurse -Force
