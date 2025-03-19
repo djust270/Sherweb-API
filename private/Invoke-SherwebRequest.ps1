@@ -98,7 +98,7 @@ Function Invoke-SherwebRequest {
         elseif ([DateTime]::Now -gt $script:SherwebAccessToken.Expiration) {
             $connectSplat = @{
                 ClientId     = $script:SherwebAccessToken.ClientId
-                ClientSecret = (Convert-SecureStringToPlainText -SecureString $script:SherwebAccessToken.ClientSecret)
+                ClientSecret = $script:SherwebAccessToken.ClientSecret
                 Scope        = $script:SherwebAccessToken.Scope
             }
             Connect-Sherweb @connectSplat
@@ -128,7 +128,7 @@ Function Invoke-SherwebRequest {
 
         $InvokeRestMethodParams = @{
             Headers     = @{
-                'Ocp-Apim-Subscription-Key' = (Convert-SecureStringToPlainText -SecureString $script:SherwebAccessToken.GatewaySubscriptionKey)
+                'Ocp-Apim-Subscription-Key' = $script:SherwebAccessToken.GatewaySubscriptionKey
                 'Authorization'             = "Bearer $($script:SherwebAccessToken.AccessToken)"
                 'Content-Type'              = 'application/json'
             }
