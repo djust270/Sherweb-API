@@ -65,12 +65,20 @@ Function Connect-Sherweb {
     )
 
     begin {
+        switch ($PSEdition) {
+            'Core' {
+                $Secret = $ClientSecret | ConvertFrom-SecureString -AsPlainText
+            }
+            'Desktop' {
+                $Secret = Convert-SecureStringToPlainText -SecureString $ClientSecret
+            }
+        }
         $splat = @{
             Uri         = $AuthUri
             Method      = "Post"
             Body        = @{
                 client_id     = $ClientId
-                client_secret = (Convert-SecureStringToPlainText -SecureString $ClientSecret)
+                client_secret = $Secret
                 scope         = $scope
                 grant_type    = "client_credentials"
             }

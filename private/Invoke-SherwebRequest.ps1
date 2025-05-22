@@ -126,9 +126,17 @@ Function Invoke-SherwebRequest {
             Write-Verbose -Message  "URL with Filter Query: $Uri"
         }
 
+        switch ($PSEdition) {
+            'Core' {
+                    $GatewayKey = $script:SherwebAccessToken.GatewaySubscriptionKey | ConvertFrom-SecureString -AsPlainText
+            }
+            'Desktop' {
+                $GatewayKey = Convert-SecureStringToPlainText -SecureString $script:SherwebAccessToken.GatewaySubscriptionKey
+            }
+        }
         $InvokeRestMethodParams = @{
             Headers     = @{
-                'Ocp-Apim-Subscription-Key' = $script:SherwebAccessToken.GatewaySubscriptionKey
+                'Ocp-Apim-Subscription-Key' = $GatewayKey
                 'Authorization'             = "Bearer $($script:SherwebAccessToken.AccessToken)"
                 'Content-Type'              = 'application/json'
             }
